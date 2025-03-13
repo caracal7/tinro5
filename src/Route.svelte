@@ -1,61 +1,42 @@
 <script>
-    import { createRouteObject } from './tinro';
+    import {getContext, setContext, onMount} from 'svelte';
+    import {createRouteObject, router} from './tinro_internal.js';
 
+    export let path = '/*';
+    export let fallback = false;
+    export let redirect = false;
+    export let firstmatch = false;
+    export let breadcrumb = null;
+    export let meta = undefined;
+    export let children;
 
-/*
-    let {
-        path = '/*',
-        fallback = false,
-        redirect = false,
-        firstmatch = false,
-        breadcrumb = null,
-        children,
-        meta
-    } = $props();
-*/
-
-        export let path = '/*';
-        export let fallback = false;
-        export let redirect = false;
-        export let firstmatch = false;
-        export let breadcrumb = null;
-        export let meta;
-        export let children;
-
-    let showContent = false; //$state(false);
-
+    let showContent = false;
     let _meta = {};
-    let _meta2 = {};//$state({});
-
+    let _meta2 = {};
 
     const route = createRouteObject({
         fallback,
-        onShow(){
-            if(showContent === true) return;
+        onShow() {
+            if (showContent === true) return;
             showContent = true;
             _meta2 = _meta;
         },
-        onHide(...args){
-            if(showContent === false) return;
+        onHide(...args) {
+            if (showContent === false) return;
             showContent = false;
         },
-        onMeta(newmeta){
+        onMeta(newmeta) {
             _meta = newmeta;
         }
     });
 
-
-//    $effect(() => {
-    $:    route.update({
-            path,
-            redirect,
-            firstmatch,
-            breadcrumb,
-        });
-//    });
-
+    $: route.update({
+        path,
+        redirect,
+        firstmatch,
+        breadcrumb,
+    });
 </script>
-
 
 {#if showContent}
     {#if meta}

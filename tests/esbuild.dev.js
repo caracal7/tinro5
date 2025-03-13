@@ -11,6 +11,7 @@ const CWD = process.cwd();
 
     if(DEV){
         derver({
+            port: 7001,
             dir: 'tests/www',
             watch: ['tests/www','tests/app_src', 'src'],
             spa: true,
