@@ -1,6 +1,6 @@
-# tinro
+# tinro5
 
-![npm](https://img.shields.io/npm/v/tinro?style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/AlexxNB/tinro/Publish%20on%20NPM?label=test&style=flat-square) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/tinro?label=Bundle%20size&style=flat-square) ![npm](https://img.shields.io/npm/dt/tinro?style=flat-square) 
+![npm](https://img.shields.io/npm/v/tinro?style=flat-square) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/AlexxNB/tinro/Publish%20on%20NPM?label=test&style=flat-square) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/tinro?label=Bundle%20size&style=flat-square) ![npm](https://img.shields.io/npm/dt/tinro?style=flat-square)
 
 
 tinro is a highly declarative, [tiny](https://github.com/AlexxNB/tinro/blob/master/COMPARE.md), dependency free router for [Svelte](https://svelte.dev) web applications.
@@ -53,7 +53,7 @@ tinro is a highly declarative, [tiny](https://github.com/AlexxNB/tinro/blob/mast
 Install tinro as a dev dependency in your Svelte project:
 
 ```shell
-$ npm i -D tinro
+$ npm i -D tinro5
 ```
 
 ## Getting started
@@ -62,7 +62,7 @@ $ npm i -D tinro
 
 ```html
 <script>
-    import {Route} from 'tinro'; 
+    import {Route} from 'tinro5';
     import Contacts from './Contacts.svelte'; // <h1>Contacts</h1>
 </script>
 
@@ -77,7 +77,7 @@ $ npm i -D tinro
     <Route path="/">
         <h1>Portfolio introduction</h1>
         <nav>
-            <a href="/portfolio/sites">Sites</a> 
+            <a href="/portfolio/sites">Sites</a>
             <a href="/portfolio/photos">Photos</a>
         </nav>
     </Route>
@@ -140,17 +140,17 @@ Sometimes, you need to show only the first nested route from all those matched w
 <Route path="/user/*" firstmatch>
 
     <!-- Will be open when URL is /user/add -->
-    <Route path="/add">Add new user</Route> 
+    <Route path="/add">Add new user</Route>
 
     <!-- Will be open when URL is /user/alex or /user/bob, but not /user/add -->
-    <Route path="/:username" let:meta>Show user {meta.params.username}'s profile</Route> 
+    <Route path="/:username" let:meta>Show user {meta.params.username}'s profile</Route>
 
 </Route>
 ```
 
 ## Links
 
-There is no special component for links. Just use native `<a>` elements. When the `href` attribute starts with a single `/` (like `/mypage` or just `/`) or is a relative path(like `foo`, `foo/bar`), it will be treated as an internal link which will be matched with defined routes. Other cases do not affect the links' behavior. 
+There is no special component for links. Just use native `<a>` elements. When the `href` attribute starts with a single `/` (like `/mypage` or just `/`) or is a relative path(like `foo`, `foo/bar`), it will be treated as an internal link which will be matched with defined routes. Other cases do not affect the links' behavior.
 
 All internal links will be passed into the tinro router. However, it is possible to prevent this by adding the `tinro-ignore` or `data-tinro-ignore` attributes:
 
@@ -158,11 +158,11 @@ All internal links will be passed into the tinro router. However, it is possible
 <a href="/api/auth" tinro-ignore>Go to API page</a>
 ```
 
-If you need to add the `active` class to links where the path corresponds to the current URL, use the `active` action from the `tinro` package:
+If you need to add the `active` class to links where the path corresponds to the current URL, use the `active` action from the `tinro5` package:
 
 ```html
 <script>
-    import {active} from 'tinro';
+    import {active} from 'tinro5';
 </script>   
 
 <!-- Common usage:
@@ -234,11 +234,11 @@ Routes with the `fallback` property show their content when no matched address w
 
 ## Route meta
 
-You can get useful meta data for each route by importing and calling `meta` from the `tinro` package. Notice, that `meta()` must be called only inside any `<Route>`'s child component.
+You can get useful meta data for each route by importing and calling `meta` from the `tinro5` package. Notice, that `meta()` must be called only inside any `<Route>`'s child component.
 
-```html 
+```html
 <script>
-    import {meta} from 'tinro';
+    import {meta} from 'tinro5';
     const route = meta();  
 </script>
 
@@ -250,7 +250,7 @@ You can get useful meta data for each route by importing and calling `meta` from
 
 You can also get meta data with the `let:meta` directive:
 
-```html 
+```html
 <Route path="/hello" let:meta>
     <h1>My URL is {meta.url}!</h1>
 </Route>
@@ -258,20 +258,20 @@ You can also get meta data with the `let:meta` directive:
 
 ### `meta.url`
 
-Current browser URL (includes query). 
+Current browser URL (includes query).
 
 *Example: `/books/stanislaw_lem/page2?order=descend`*
 
 
 ### `meta.pattern`
 
-The pattern of the route path, including parameter placeholders. It is a combination of the `path` properties of all parent routes. 
+The pattern of the route path, including parameter placeholders. It is a combination of the `path` properties of all parent routes.
 
 *Example: `/books/:author`*
 
 ### `meta.match`
 
-Part of the browser URL that is matched with the route pattern. 
+Part of the browser URL that is matched with the route pattern.
 
 *Example: `/books/stanislaw_lem`*
 
@@ -340,7 +340,7 @@ By default, navigation uses the `History API` which allows you to have clean pag
 ```html
 <!-- Root file of your project, ex. App.svelte -->
 <script>
-    import {Route,router} from 'tinro';
+    import {Route,router} from 'tinro5';
 
     router.mode.hash(); // enables hash navigation method
 
@@ -384,7 +384,7 @@ When you deploy your app in subdirectory on the host and use history navigation 
 
 ```html
 <script>
-    import {router, Route} from 'tinro';
+    import {router, Route} from 'tinro5';
     router.base('/subdir');
 </script>
 
@@ -399,12 +399,12 @@ When you deploy your app in subdirectory on the host and use history navigation 
 
 *Notice: Base path must start but not end with `/`*
 
-## Manage hash and query 
+## Manage hash and query
 
 You can change URL's parts (such as query and hash) using `router.location` methods:
 
 ```javascript
-import {router} from 'tinro';
+import {router} from 'tinro5';
 
 router.goto('/foo'); //URL: /foo
 router.location.query.set('name','alex'); //URL: /foo?name=alex
@@ -417,7 +417,7 @@ router.location.hash.clear(); //URL: /foo
 
 ## API
 
-You can import the `router` object from the `tinro` package:
+You can import the `router` object from the `tinro5` package:
 
 ### `router.goto(href)`
 Programmatically change the URL of the current page.
@@ -461,7 +461,7 @@ Note: you can use Svelte's auto-subscription to retrieve data from the `router` 
 
 ```html
 <script>
-    import {router} from 'tinro';
+    import {router} from 'tinro5';
 </script>
 
 Current page URL is: {$router.path}
@@ -510,7 +510,7 @@ If you want a transiton when the path changes, create a component like this:
 ```html
 <!-- Transition.svelte -->
 <script>
-    import {router} from 'tinro';
+    import {router} from 'tinro5';
     import {fade} from 'svelte/transition';
 </script>
 
@@ -524,7 +524,7 @@ If you want a transiton when the path changes, create a component like this:
 Then, put your routes inside the *Transition* component:
 
 ```html
-<Transition> 
+<Transition>
     <Route path="/">...</Route>
     <Route path="/page1">...</Route>
     <Route path="/page2">...</Route>
@@ -552,7 +552,7 @@ You can also create a special guard component as shown in [this example](https:/
 tinro doesn't control scrolling in your app, but sometimes you need to scroll to the top of the page after navigation. To do this, just add the `router` store subscription to your root component (ex. `App.svelte`). This way you can run any actions (not just scrolling) every time the `URL` changes.
 
 ```javascript
-import {router} from `tinro`;
+import {router} from `tinro5`;
 router.subscribe(_ => window.scrollTo(0, 0));
 ```
 
@@ -563,7 +563,7 @@ The problem of any SPA router is that it does not use default browser navigation
 ```html
 <!-- Announcer.svelte-->
 <script>
-  import { router } from 'tinro';
+  import { router } from 'tinro5';
   $: current = $router.path === '/' ? 'Home' : $router.path.slice(1);
 </script>
 
@@ -598,12 +598,12 @@ Then place this component somewhere in your `App.svelte` root file:
 
 ## Troubleshooting
 
-If you use Vite to bandle your app (including SvelteKit), you should exclude `tinro` from the `optimizedDeps` in Vite's config:
+If you use Vite to bandle your app (including SvelteKit), you should exclude `tinro5` from the `optimizedDeps` in Vite's config:
 
 ```javascript
   ...
   optimizeDeps: {
-    exclude: ['tinro']
+    exclude: ['tinro5']
   },
   ...
 ```

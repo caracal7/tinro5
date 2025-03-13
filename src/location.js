@@ -1,5 +1,5 @@
 import MODES from './modes';
-import {parseQuery,makeQuery,prefix} from './lib';
+import { parseQuery, makeQuery, prefix } from './lib';
 import { get } from 'svelte/store';
 
 let memoURL;
@@ -17,10 +17,10 @@ function createLocation(){
     const reset = _ => window.onhashchange = window.onpopstate = memoURL = null;
     const dispatch = _ => listener && listener(readLocation(MODE));
 
-    const setMode = (newMode)=>{
+    const setMode = newMode => {
         newMode && (MODE = newMode);
         reset();
-        MODE !== MODES.OFF 
+        MODE !== MODES.OFF
         && MODES.run( MODE ,
             _ => window.onpopstate = dispatch,
             _ => window.onhashchange = dispatch
@@ -28,10 +28,10 @@ function createLocation(){
         && dispatch()
     }
 
-    const makeURL = (parts)=>{
+    const makeURL = parts => {
         const loc = Object.assign(readLocation(MODE),parts);
-        return loc.path 
-             + prefix(makeQuery(loc.query),'?') 
+        return loc.path
+             + prefix(makeQuery(loc.query),'?')
              + prefix(loc.hash,'#')
     }
 
@@ -60,7 +60,7 @@ function createLocation(){
 
 function writeLocation(MODE, href, replace){
     !replace && (from=last);
-       
+
     const setURL = (url) => history[`${replace ? 'replace' : 'push'}State`]({}, '', url);
 
     MODES.run( MODE,
@@ -81,7 +81,7 @@ function readLocation(MODE){
     const match = url.match(/^([^?#]+)(?:\?([^#]+))?(?:\#(.+))?$/);
 
     last=url;
-  
+
     return {
         url,
         from,

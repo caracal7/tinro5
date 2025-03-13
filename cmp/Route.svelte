@@ -1,12 +1,7 @@
 <script>
-
     import {createRouteObject} from './../dist/tinro_lib';
 
-    export let path = '/*';
-    export let fallback = false;
-    export let redirect = false;
-    export let firstmatch = false;
-    export let breadcrumb = null;
+    const { path = '/*', fallback = false, redirect = false, firstmatch = false, breadcrumb = null } = $props();
 
     let showContent = false;
     let params = {}; /* DEPRECATED */
@@ -22,11 +17,13 @@
         }
     });
 
-    $: route.update({
-        path,
-        redirect,
-        firstmatch,
-        breadcrumb,
+    $effect(() => {
+        route.update({
+            path,
+            redirect,
+            firstmatch,
+            breadcrumb,
+        });
     });
 </script>
 

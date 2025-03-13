@@ -7,7 +7,7 @@
 	import Base from './Base.svelte';
 
 	let isRedirect = false;
-</script> 
+</script>
 
 <div class="layout">
 	<div class="tests">
@@ -44,8 +44,8 @@
 				<a href="/test12/foo/bar">Submatched</a> <a href="/test12/foo/foo">Not submatched</a>
 			</li>
 			<li>Breadcrumbs<br/>
-				<a href="/test13">Parent</a> 
-				<a href="/test13/foo">Child</a> 
+				<a href="/test13">Parent</a>
+				<a href="/test13/foo">Child</a>
 			</li>
 			<li><a href="/test14">Reactive props</a></li>
 			<li><a href="/test15">Base changing</a></li>
@@ -134,9 +134,9 @@
 				<Route path="/" redirect={isRedirect}><h1>Not redirected - OK</h1></Route>
 			</Route>
 
-			
+
 			<Base/>
-			
+
 			<Route fallback><h1>Root fallback</h1></Route>
 	</div>
 </div>
