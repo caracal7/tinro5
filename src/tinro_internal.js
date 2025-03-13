@@ -1,4 +1,4 @@
-import {getContext, hasContext} from 'svelte';
+import {getContext, hasContext, setContext, tick} from 'svelte';
 import {writable} from 'svelte/store';
 
 // Код из modes.js
@@ -401,6 +401,9 @@ export function createRouteObject(options, parent) {
         }
     });
 
+    // Важно! Устанавливаем контекст для корректной работы meta()
+    setContext(CTX, route);
+
     return route;
 }
 
@@ -433,27 +436,27 @@ function createRouteProtoObject(options) {
         async showFallbacks() {
             if (this.fallback) return;
 
-            await import('svelte').then(mod => mod.tick()).then(async () => {
-                if (
-                    (this.childs.size > 0 && this.activeChilds.size == 0) ||
-                    (this.childs.size == 0 && this.fallbacks.size > 0)
-                ) {
-                    let obj = this;
-                    while (obj.fallbacks.size == 0) {
-                        obj = obj.parent;
-                        if (!obj) return;
-                    }
+            await tick();
 
-                    obj && obj.fallbacks.forEach(fb => {
-                        if (fb.redirect) {
-                            const nextUrl = makeRedirectURL('/', fb.parent.pattern, fb.redirect);
-                            router.goto(nextUrl, true);
-                        } else {
-                            fb.show();
-                        }
-                    });
+            if (
+                (this.childs.size > 0 && this.activeChilds.size == 0) ||
+                (this.childs.size == 0 && this.fallbacks.size > 0)
+            ) {
+                let obj = this;
+                while (obj.fallbacks.size == 0) {
+                    obj = obj.parent;
+                    if (!obj) return;
                 }
-            });
+
+                obj && obj.fallbacks.forEach(fb => {
+                    if (fb.redirect) {
+                        const nextUrl = makeRedirectURL('/', fb.parent.pattern, fb.redirect);
+                        router.goto(nextUrl, true);
+                    } else {
+                        fb.show();
+                    }
+                });
+            }
         },
         start() {
             if (this.router.un) return;

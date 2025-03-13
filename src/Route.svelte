@@ -30,6 +30,9 @@
         }
     });
 
+    // Регистрируем маршрут при монтировании компонента
+    onMount(() => route.register());
+
     $: route.update({
         path,
         redirect,
