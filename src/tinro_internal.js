@@ -120,7 +120,15 @@ let base = '';
 // Добавляем переменную для отслеживания последнего URL
 let lastProcessedUrl = '';
 
+// Добавляем защиту от слишком частых изменений URL
+let redirectLock = false;
+let redirectTimeout = null;
+const REDIRECT_TIMEOUT = 100; // мс между перенаправлениями
+
 const location = createLocation();
+
+// Храним предыдущие данные о местоположении для сравнения
+let lastLocationData = null;
 
 function createLocation() {
     let MODE = MODES.getDefault();
@@ -152,6 +160,13 @@ function createLocation() {
         mode: setMode,
         get: _ => readLocation(MODE),
         go(href, replace) {
+            // Проверяем, не находимся ли мы уже на этом URL
+            const currentLocation = readLocation(MODE);
+            if (currentLocation.path === href || currentLocation.url === href) {
+                console.log('[Tinro] Already at location:', href);
+                return; // Пропускаем переход к текущему URL
+            }
+            
             writeLocation(MODE, href, replace);
             dispatch();
         },
@@ -174,8 +189,20 @@ function createLocation() {
 function writeLocation(MODE, href, replace) {
     // Пропускаем обработку, если URL не изменился
     if (href === lastProcessedUrl) return;
-    lastProcessedUrl = href;
     
+    // Добавляем защиту от слишком частых изменений
+    if (redirectLock) return;
+    redirectLock = true;
+    
+    // Отменяем предыдущий таймер, если есть
+    if (redirectTimeout) clearTimeout(redirectTimeout);
+    
+    // Устанавливаем новый таймер
+    redirectTimeout = setTimeout(() => {
+        redirectLock = false;
+    }, REDIRECT_TIMEOUT);
+    
+    lastProcessedUrl = href;
     !replace && (from = last);
 
     const setURL = (url) => history[`${replace ? 'replace' : 'push'}State`]({}, '', url);
@@ -195,17 +222,27 @@ function readLocation(MODE) {
         _ => memoURL || '/'
     );
 
+    // Если URL не изменился, возвращаем сохраненные данные
+    if (lastLocationData && lastLocationData.url === url) {
+        return lastLocationData;
+    }
+
     const match = url.match(/^([^?#]+)(?:\?([^#]+))?(?:\#(.+))?$/);
 
     last = url;
 
-    return {
+    const locationData = {
         url,
         from,
         path: match[1] || '',
         query: parseQuery(match[2] || ''),
         hash: match[3] || '',
     };
+
+    // Сохраняем данные для будущих сравнений
+    lastLocationData = locationData;
+
+    return locationData;
 }
 
 function locationMethods(l) {
@@ -321,6 +358,10 @@ function getParams() {
 // Код из route.js
 const CTX = 'tinro';
 
+// Добавляем дополнительный механизм отслеживания последних перенаправлений
+const recentRedirects = new Set();
+const MAX_RECENT_REDIRECTS = 10;
+
 export function createRouteObject(options, parent) {
     parent = parent || getContext(CTX) || ROOT;
 
@@ -377,6 +418,21 @@ export function createRouteObject(options, parent) {
 
             if (!route.fallback && match && route.redirect && (!route.exact || (route.exact && match.exact))) {
                 const nextUrl = makeRedirectURL(path, route.parent.pattern, route.redirect);
+                
+                // Проверяем, не был ли этот редирект уже недавно выполнен
+                if (recentRedirects.has(nextUrl)) {
+                    console.warn('[Tinro] Detected redirect loop:', nextUrl);
+                    matching = false;
+                    return;
+                }
+                
+                // Добавляем текущий редирект в список недавних
+                recentRedirects.add(nextUrl);
+                if (recentRedirects.size > MAX_RECENT_REDIRECTS) {
+                    // Удаляем самый старый редирект
+                    recentRedirects.delete(recentRedirects.values().next().value);
+                }
+                
                 matching = false;
                 return router.goto(nextUrl, true);
             }
@@ -474,9 +530,23 @@ function createRouteProtoObject(options) {
                 let redirected = false;
                 
                 obj && obj.fallbacks.forEach(fb => {
-                    if (fb.redirect && !redirected) {
+                    if (fb.redirect && !redirected && !redirectLock) {
                         redirected = true;
                         const nextUrl = makeRedirectURL('/', fb.parent.pattern, fb.redirect);
+                        
+                        // Проверяем, не был ли этот редирект уже недавно выполнен
+                        if (recentRedirects.has(nextUrl)) {
+                            console.warn('[Tinro] Detected redirect loop in fallback:', nextUrl);
+                            return;
+                        }
+                        
+                        // Добавляем текущий редирект в список недавних
+                        recentRedirects.add(nextUrl);
+                        if (recentRedirects.size > MAX_RECENT_REDIRECTS) {
+                            // Удаляем самый старый редирект
+                            recentRedirects.delete(recentRedirects.values().next().value);
+                        }
+                        
                         router.goto(nextUrl, true);
                     } else if (!fb.redirect) {
                         fb.show();
