@@ -117,6 +117,9 @@ let from;
 let last;
 let base = '';
 
+// Добавляем переменную для отслеживания последнего URL
+let lastProcessedUrl = '';
+
 const location = createLocation();
 
 function createLocation() {
@@ -169,6 +172,10 @@ function createLocation() {
 }
 
 function writeLocation(MODE, href, replace) {
+    // Пропускаем обработку, если URL не изменился
+    if (href === lastProcessedUrl) return;
+    lastProcessedUrl = href;
+    
     !replace && (from = last);
 
     const setURL = (url) => history[`${replace ? 'replace' : 'push'}State`]({}, '', url);
@@ -326,6 +333,9 @@ export function createRouteObject(options, parent) {
     const type = options.fallback ? 'fallbacks' : 'childs';
 
     const metaStore = writable({});
+    
+    // Флаг для предотвращения рекурсивных вызовов
+    let matching = false;
 
     const route = createRouteProtoObject({
         fallback: options.fallback,
@@ -356,6 +366,10 @@ export function createRouteObject(options, parent) {
             route.parent.activeChilds.delete(route);
         },
         match: async () => {
+            // Предотвращаем рекурсивные вызовы
+            if (matching) return;
+            matching = true;
+            
             route.matched = false;
 
             const {path, url, from, query} = route.router.location;
@@ -363,6 +377,7 @@ export function createRouteObject(options, parent) {
 
             if (!route.fallback && match && route.redirect && (!route.exact || (route.exact && match.exact))) {
                 const nextUrl = makeRedirectURL(path, route.parent.pattern, route.redirect);
+                matching = false;
                 return router.goto(nextUrl, true);
             }
 
@@ -397,7 +412,9 @@ export function createRouteObject(options, parent) {
                 route.hide();
             }
 
-            if (match) route.showFallbacks();
+            if (match) await route.showFallbacks();
+            
+            matching = false;
         }
     });
 
@@ -436,6 +453,9 @@ function createRouteProtoObject(options) {
         async showFallbacks() {
             if (this.fallback) return;
 
+            if (this._processingFallbacks) return;
+            this._processingFallbacks = true;
+
             await tick();
 
             if (
@@ -445,18 +465,26 @@ function createRouteProtoObject(options) {
                 let obj = this;
                 while (obj.fallbacks.size == 0) {
                     obj = obj.parent;
-                    if (!obj) return;
+                    if (!obj) {
+                        this._processingFallbacks = false;
+                        return;
+                    }
                 }
 
+                let redirected = false;
+                
                 obj && obj.fallbacks.forEach(fb => {
-                    if (fb.redirect) {
+                    if (fb.redirect && !redirected) {
+                        redirected = true;
                         const nextUrl = makeRedirectURL('/', fb.parent.pattern, fb.redirect);
                         router.goto(nextUrl, true);
-                    } else {
+                    } else if (!fb.redirect) {
                         fb.show();
                     }
                 });
             }
+            
+            this._processingFallbacks = false;
         },
         start() {
             if (this.router.un) return;
