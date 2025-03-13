@@ -1,5 +1,5 @@
 <script>
-    import {meta,router} from 'tinro';
+    import {meta,router} from './../../src/index';
     let routeData = meta();
 </script>
 

@@ -15,13 +15,13 @@ export function createRouteObject(options){
     const parent = getContext(CTX) || ROOT;
 
     if(parent.exact || parent.fallback)  err(
-        `${options.fallback ? '<Route fallback>' : `<Route path="${options.path}">`}  can't be inside ${parent.fallback ? 
+        `${options.fallback ? '<Route fallback>' : `<Route path="${options.path}">`}  can't be inside ${parent.fallback ?
             '<Route fallback>' :
             `<Route path="${parent.path || '/'}"> with exact path` }`
     );
 
     const type = options.fallback ? 'fallbacks' : 'childs';
-            
+
     const metaStore = writable({});
 
     const route = createRouteProtoObject({
@@ -80,11 +80,11 @@ export function createRouteObject(options){
             });
 
             metaStore.set(route.meta);
-           
+
             if(
                 match
-                &&  !route.fallback  
-                &&  (!route.exact || (route.exact && match.exact)) 
+                &&  !route.fallback
+                &&  (!route.exact || (route.exact && match.exact))
                 &&  (!route.parent.firstmatch || !route.parent.matched)
             ){
                 options.onMeta(route.meta);
@@ -93,7 +93,7 @@ export function createRouteObject(options){
             }else{
                 route.hide();
             }
-            
+
             if(match) route.showFallbacks();
         }
     });
@@ -105,8 +105,8 @@ export function createRouteObject(options){
 }
 
 export function getMeta(){
-    return hasContext(CTX) 
-        ? getContext(CTX).meta 
+    return hasContext(CTX)
+        ? getContext(CTX).meta
         : err('meta() function must be run inside any `<Route>` child component only');
 }
 
@@ -129,7 +129,7 @@ function createRouteProtoObject(options){
             if(this.fallback) return;
 
             await tick();
-  
+
             if(
                 (this.childs.size > 0 && this.activeChilds.size == 0) ||
                 (this.childs.size == 0 && this.fallbacks.size > 0)
@@ -139,7 +139,7 @@ function createRouteProtoObject(options){
                     obj = obj.parent;
                     if(!obj) return;
                 }
-                
+
                 obj && obj.fallbacks.forEach(fb => {
                     if(fb.redirect) {
                         const nextUrl = makeRedirectURL('/',fb.parent.pattern,fb.redirect);

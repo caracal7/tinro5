@@ -6,18 +6,18 @@ const DEV = process.argv.includes('--dev');
 const CWD = process.cwd();
 
 (async ()=>{
-    await build_tinro_lib();
+    //await build_tinro_lib();
     await build_test_app();
 
     if(DEV){
         derver({
             dir: 'tests/www',
-            watch: ['tests/www','tests/app_src','cmp','src'],
+            watch: ['tests/www','tests/app_src', 'src'],
             spa: true,
             onwatch:async (lr,item)=>{
                 if(['tests/app_src','cmp','src'].includes(item)){
                     lr.prevent();
-                    await build_tinro_lib();
+                //    await build_tinro_lib();
                     await build_test_app();
                 }
             }
@@ -25,7 +25,7 @@ const CWD = process.cwd();
     }
 })()
 
-
+/*
 async function build_tinro_lib(){
     await esbuild.build({
         entryPoints: ['src/tinro.js'],
@@ -40,8 +40,10 @@ async function build_tinro_lib(){
         ]
     });
 }
+*/
 
 async function build_test_app(){
+
     await esbuild.build({
         entryPoints: ['tests/app_src/app.js'],
         bundle: true,
@@ -50,13 +52,15 @@ async function build_test_app(){
         sourcemap: DEV && 'inline',
         minify: !DEV,
         plugins: [
-            aliasPlugin,
+        //    aliasPlugin,
             sveltePlugin({
                 dev: DEV,
                 css: css => css.write('tests/www/build/bundle.css')
             })
         ]
     });
+
+
 }
 
 
@@ -71,4 +75,4 @@ const aliasPlugin = {
         return { path: CWD + '/cmp/index.js' }
       });
     },
-  }
+}

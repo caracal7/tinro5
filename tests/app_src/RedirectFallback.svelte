@@ -1,5 +1,5 @@
 <script>
-    import {Route} from 'tinro';
+    import {Route} from './../../src/index';
     let isAuthed = false;
 </script>
 

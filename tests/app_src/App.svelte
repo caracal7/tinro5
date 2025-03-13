@@ -1,5 +1,5 @@
 <script>
-	import {Route,router,active} from 'tinro';
+	import {Route,router,active} from './../../src/index';
 	import Child from './Child.svelte';
 	import RedirectSwitch from './RedirectSwitch.svelte';
 	import RedirectByValue from './RedirectByValue.svelte';
@@ -97,7 +97,11 @@
 				<button id="setHash" on:click={()=>{router.goto('/'); router.mode.hash();router.goto('/')}}>Hash</button>
 				<button id="setMemory" on:click={()=>{router.goto('/'); router.mode.memory();router.goto('/')}}>Memory</button>
 			</Route>
-			<Route path="/test7/:name" let:params><h1>Hello, {params.name}!</h1></Route>
+			<Route path="/test7/:name">
+				{#snippet meta(data)}
+					<h1>Hello, {JSON.stringify(data.params.name)}!</h1>
+				{/snippet}
+			</Route>
 			<Route path="/test8/:name"><Child /></Route>
 			<Route path="/test9/*">
 				<h1>Links test</h1>
@@ -125,8 +129,16 @@
 			</Route>
 
 			<Route path="/test13/*" breadcrumb="Parent">
-				<Route path="/" let:meta><h1>{JSON.stringify(meta.breadcrumbs)}</h1></Route>
-				<Route path="/foo" breadcrumb="Child" let:meta><h1>{JSON.stringify(meta.breadcrumbs)}</h1></Route>
+				<Route path="/">
+					{#snippet meta(meta)}
+						<h1>{JSON.stringify(meta.breadcrumbs)}</h1>
+					{/snippet}
+				</Route>
+				<Route path="/foo" breadcrumb="Child">
+					{#snippet meta(meta)}
+						<h1>{JSON.stringify(meta.breadcrumbs)}</h1>
+					{/snippet}
+				</Route>
 			</Route>
 
 			<Route path="/test14/*">

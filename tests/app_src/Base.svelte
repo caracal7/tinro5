@@ -1,5 +1,5 @@
 <script>
-    import {router,Route} from 'tinro';
+    import {router,Route} from './../../src/index';
 </script>
 
 <Route path="/test15/*">
