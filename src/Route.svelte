@@ -1,16 +1,20 @@
 <script>
-    import {getContext, setContext, onMount, tick} from 'svelte';
+    import {getContext, setContext, onMount, tick, onDestroy} from 'svelte';
     import {writable} from 'svelte/store';
     import {
-        router, 
+        router,
+        CTX,
         formatPath, 
         getRouteMatch, 
-        makeRedirectURL, 
-        CTX, 
-        recentRedirects, 
-        MAX_RECENT_REDIRECTS, 
-        redirectLock
+        makeRedirectURL
     } from './tinro_internal.js';
+
+    // Перемещаем механизм предотвращения редиректов в компонент
+    const recentRedirects = new Set();
+    const MAX_RECENT_REDIRECTS = 10;
+    let redirectLock = false;
+    let redirectTimeout = null;
+    const REDIRECT_TIMEOUT = 100; // мс между перенаправлениями
 
     // ROOT для createRouteObject
     const ROOT = createRouteProtoObject({
@@ -73,6 +77,17 @@
                                 // Удаляем самый старый редирект
                                 recentRedirects.delete(recentRedirects.values().next().value);
                             }
+                            
+                            // Защита от слишком частых изменений URL
+                            redirectLock = true;
+                            
+                            // Отменяем предыдущий таймер, если есть
+                            if (redirectTimeout) clearTimeout(redirectTimeout);
+                            
+                            // Устанавливаем новый таймер
+                            redirectTimeout = setTimeout(() => {
+                                redirectLock = false;
+                            }, REDIRECT_TIMEOUT);
                             
                             router.goto(nextUrl, true);
                         } else if (!fb.redirect) {
@@ -170,6 +185,17 @@
                         recentRedirects.delete(recentRedirects.values().next().value);
                     }
                     
+                    // Защита от слишком частых изменений URL
+                    redirectLock = true;
+                    
+                    // Отменяем предыдущий таймер, если есть
+                    if (redirectTimeout) clearTimeout(redirectTimeout);
+                    
+                    // Устанавливаем новый таймер
+                    redirectTimeout = setTimeout(() => {
+                        redirectLock = false;
+                    }, REDIRECT_TIMEOUT);
+                    
                     matching = false;
                     return router.goto(nextUrl, true);
                 }
@@ -245,9 +271,24 @@
         }
     });
 
-    // Регистрируем маршрут при монтировании компонента
-    onMount(() => route.register());
-
+    // Отдельные функции для управления жизненным циклом
+    let unregister;
+    
+    // Регистрируем маршрут при монтировании 
+    onMount(() => {
+        unregister = route.register();
+    });
+    
+    // Используем onDestroy для корректной очистки ресурсов
+    onDestroy(() => {
+        if (unregister) unregister();
+        if (redirectTimeout) {
+            clearTimeout(redirectTimeout);
+            redirectTimeout = null;
+        }
+    });
+    
+    // Реактивное обновление параметров маршрута
     $: route.update({
         path,
         redirect,
