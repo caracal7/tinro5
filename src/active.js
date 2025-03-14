@@ -15,25 +15,29 @@ export function active(node) {
     };
 
     const matchLink = () => {
-        const match = getRouteMatch(href, current); 
+        const match = getRouteMatch(href, current);
         match && (match.exact && exact || !exact) ? node.classList.add(cl) : node.classList.remove(cl);
     };
 
     getAttributes();
-    
+
     // Используем явное хранение подписки для более надежного управления жизненным циклом
     unsubscribe = router.subscribe(r => {
         current = r?.path || '';
         matchLink();
     });
-          
+
     return {
         destroy: () => {
             if (unsubscribe) unsubscribe();
         },
-        update: () => { 
-            getAttributes(); 
+        update: () => {
+            getAttributes();
             matchLink();
         }
     };
-} 
+}
+
+window.tinro5.active = active;
+
+console.log(window.tinro5)

@@ -1,5 +1,5 @@
 <script>
-	import {Route,active} from './../../src/index';
+	import {Route} from './../../src/index';
 	import Child from './Child.svelte';
 	import RedirectSwitch from './RedirectSwitch.svelte';
 	import RedirectByValue from './RedirectByValue.svelte';
@@ -7,6 +7,8 @@
 	import Base from './Base.svelte';
 
 	let isRedirect = false;
+
+	const active = tinro5.active;
 </script>
 
 <div class="layout">
