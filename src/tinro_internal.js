@@ -318,6 +318,17 @@ function routerStore() {
     };
 }
 
+/* DEPRECATED */
+function getParams() {
+    return getContext('tinro').meta.params;
+}
+
+export function getMeta() {
+    return hasContext(CTX)
+        ? getContext(CTX).meta
+        : err('meta() function must be run inside any `<Route>` child component only');
+}
+
 // Экспортируем router
 export const router = routerStore();
 
@@ -340,18 +351,4 @@ function aClickListener(go) {
 
     addEventListener('click', h);
     return () => removeEventListener('click', h);
-}
-
-/* DEPRECATED */
-function getParams() {
-    return getContext('tinro').meta.params;
-}
-
-export function getMeta() {
-    return hasContext(CTX)
-        ? getContext(CTX).meta
-        : err('meta() function must be run inside any `<Route>` child component only');
-}
-
-// Экспорт meta из route.js
-export const meta = getMeta; 
+} 
