@@ -16,6 +16,20 @@ const pkg = require('./package.json');
         ]
     });*/
 
+
+    await esbuild.build({
+      entryPoints: ['src/Route.svelte'], // Входной файл
+      bundle: true,
+      outfile: 'dist/sv.js', // Выходной файл
+      format: 'esm', // Формат ES-модулей
+      plugins: [
+        sveltePlugin(),
+      ],
+      loader: {
+        '.svelte': 'text', // Обработка .svelte файлов
+      },
+    });
+
     await esbuild.build({
         entryPoints: ['src/index.js'],
         bundle: true,
