@@ -1,5 +1,5 @@
 import {getContext, hasContext, setContext, tick} from 'svelte';
-import {writable} from 'svelte/store';
+import {writable, get} from 'svelte/store';
 
 // Код из modes.js
 export const MODES = {
@@ -8,14 +8,19 @@ export const MODES = {
     MEMORY: 3,
     OFF: 4,
     run(mode, fnHistory, fnHash, fnMemory) {
-        return mode === MODES.HISTORY 
+        return mode === this.HISTORY 
             ? fnHistory && fnHistory()
-            : mode === MODES.HASH
+            : mode === this.HASH
                 ? fnHash && fnHash()
                 : fnMemory && fnMemory();
     },
     getDefault() {
-        return !window || window.location.pathname === 'srcdoc' ? MODES.MEMORY : MODES.HISTORY;
+        try {
+            return window && window.location.pathname === 'srcdoc' ? this.MEMORY : this.HISTORY;
+        } catch (e) {
+            // В случае ошибки доступа к window (SSR)
+            return this.MEMORY;
+        }
     }
 };
 
@@ -315,31 +320,6 @@ function routerStore() {
 
 // Экспортируем router
 export const router = routerStore();
-
-export function active(node) {
-    let href;
-    let exact;
-    let cl;
-    let current;
-
-    const getAttributes = () => {
-        href = getAttr(node, 'href').replace(/^\/#|[?#].*$|\/$/g, ''),
-        exact = getAttr(node, 'exact', true),
-        cl = getAttr(node, 'active-class', true, 'active');
-    };
-
-    const matchLink = () => {
-        const match = getRouteMatch(href, current); 
-        match && (match.exact && exact || !exact) ? node.classList.add(cl) : node.classList.remove(cl);
-    };
-
-    getAttributes();
-          
-    return {
-        destroy: router.subscribe(r => {current = r.path; matchLink();}),
-        update: () => { getAttributes(); matchLink();}
-    };
-}
 
 function aClickListener(go) {
     const h = e => {

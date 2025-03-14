@@ -1,2 +1,3 @@
 export { default as Route } from './Route.svelte';
-export { router, active, meta } from './tinro_internal.js';
+export { router, meta } from './tinro_internal.js';
+export { active } from './active.js';
