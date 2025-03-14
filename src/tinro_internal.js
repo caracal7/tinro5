@@ -8,7 +8,7 @@ export const MODES = {
     MEMORY: 3,
     OFF: 4,
     run(mode, fnHistory, fnHash, fnMemory) {
-        return mode === this.HISTORY 
+        return mode === this.HISTORY
             ? fnHistory && fnHistory()
             : mode === this.HASH
                 ? fnHash && fnHash()
@@ -64,7 +64,7 @@ export function getRouteMatch(pattern, path) {
 }
 
 export function getAttr(node, attr, remove, def) {
-    const re = [attr, 'data-' + attr].reduce( 
+    const re = [attr, 'data-' + attr].reduce(
         (r, c) => {
             const a = node.getAttribute(c);
             if (remove) node.removeAttribute(c);
@@ -85,7 +85,7 @@ export function parseQuery(str) {
           (r[name] === undefined) ? r[name] = [value] : r[name].push(value);
           return r;
       }, {});
-  
+
     return Object.entries(o).reduce((r, p) => (r[p[0]] = p[1].length > 1 ? p[1] : p[1][0], r), {});
 }
 
@@ -101,9 +101,6 @@ export function prefix(str, prefix) {
     return !str ? '' : prefix + str;
 }
 
-export function err(text) {
-    throw new Error('[Tinro] ' + text);
-}
 
 export function makeRedirectURL(path, parent_pattern, slug) {
     if (slug === '') return path;
@@ -179,7 +176,7 @@ function createLocation() {
                 console.log('[Tinro] Already at location:', href);
                 return; // Пропускаем переход к текущему URL
             }
-            
+
             writeLocation(MODE, href, replace);
             dispatch();
         },
@@ -202,19 +199,19 @@ function createLocation() {
 function writeLocation(MODE, href, replace) {
     // Пропускаем обработку, если URL не изменился
     if (href === lastProcessedUrl) return;
-    
+
     // Добавляем защиту от слишком частых изменений
     if (redirectLock) return;
     redirectLock = true;
-    
+
     // Отменяем предыдущий таймер, если есть
     if (redirectTimeout) clearTimeout(redirectTimeout);
-    
+
     // Устанавливаем новый таймер
     redirectTimeout = setTimeout(() => {
         redirectLock = false;
     }, REDIRECT_TIMEOUT);
-    
+
     lastProcessedUrl = href;
     !replace && (from = last);
 
@@ -323,11 +320,17 @@ function getParams() {
     return getContext('tinro').meta.params;
 }
 
-export function getMeta() {
+function getMeta() {
     return hasContext(CTX)
         ? getContext(CTX).meta
         : err('meta() function must be run inside any `<Route>` child component only');
 }
+
+export function err(text) {
+    throw new Error('[Tinro] ' + text);
+}
+
+
 
 // Экспортируем router
 export const router = routerStore();
@@ -351,4 +354,4 @@ function aClickListener(go) {
 
     addEventListener('click', h);
     return () => removeEventListener('click', h);
-} 
+}
