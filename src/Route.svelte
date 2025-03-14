@@ -3,11 +3,14 @@
     import {writable} from 'svelte/store';
     import {
         router,
-        CTX,
-        formatPath, 
-        getRouteMatch, 
+        formatPath,
+        getRouteMatch,
         makeRedirectURL
     } from './tinro_internal.js';
+
+
+    // Контекст для route
+    const CTX = 'tinro';
 
     // Перемещаем механизм предотвращения редиректов в компонент
     const recentRedirects = new Set();
@@ -59,43 +62,43 @@
                     }
 
                     let redirected = false;
-                    
+
                     obj && obj.fallbacks.forEach(fb => {
                         if (fb.redirect && !redirected && !redirectLock) {
                             redirected = true;
                             const nextUrl = makeRedirectURL('/', fb.parent.pattern, fb.redirect);
-                            
+
                             // Проверяем, не был ли этот редирект уже недавно выполнен
                             if (recentRedirects.has(nextUrl)) {
                                 console.warn('[Tinro] Detected redirect loop in fallback:', nextUrl);
                                 return;
                             }
-                            
+
                             // Добавляем текущий редирект в список недавних
                             recentRedirects.add(nextUrl);
                             if (recentRedirects.size > MAX_RECENT_REDIRECTS) {
                                 // Удаляем самый старый редирект
                                 recentRedirects.delete(recentRedirects.values().next().value);
                             }
-                            
+
                             // Защита от слишком частых изменений URL
                             redirectLock = true;
-                            
+
                             // Отменяем предыдущий таймер, если есть
                             if (redirectTimeout) clearTimeout(redirectTimeout);
-                            
+
                             // Устанавливаем новый таймер
                             redirectTimeout = setTimeout(() => {
                                 redirectLock = false;
                             }, REDIRECT_TIMEOUT);
-                            
+
                             router.goto(nextUrl, true);
                         } else if (!fb.redirect) {
                             fb.show();
                         }
                     });
                 }
-                
+
                 this._processingFallbacks = false;
             },
             start() {
@@ -126,7 +129,7 @@
         const type = options.fallback ? 'fallbacks' : 'childs';
 
         const metaStore = writable({});
-        
+
         // Флаг для предотвращения рекурсивных вызовов
         let matching = false;
 
@@ -162,7 +165,7 @@
                 // Предотвращаем рекурсивные вызовы
                 if (matching) return;
                 matching = true;
-                
+
                 route.matched = false;
 
                 const {path, url, from, query} = route.router.location;
@@ -170,32 +173,32 @@
 
                 if (!route.fallback && match && route.redirect && (!route.exact || (route.exact && match.exact))) {
                     const nextUrl = makeRedirectURL(path, route.parent.pattern, route.redirect);
-                    
+
                     // Проверяем, не был ли этот редирект уже недавно выполнен
                     if (recentRedirects.has(nextUrl)) {
                         console.warn('[Tinro] Detected redirect loop:', nextUrl);
                         matching = false;
                         return;
                     }
-                    
+
                     // Добавляем текущий редирект в список недавних
                     recentRedirects.add(nextUrl);
                     if (recentRedirects.size > MAX_RECENT_REDIRECTS) {
                         // Удаляем самый старый редирект
                         recentRedirects.delete(recentRedirects.values().next().value);
                     }
-                    
+
                     // Защита от слишком частых изменений URL
                     redirectLock = true;
-                    
+
                     // Отменяем предыдущий таймер, если есть
                     if (redirectTimeout) clearTimeout(redirectTimeout);
-                    
+
                     // Устанавливаем новый таймер
                     redirectTimeout = setTimeout(() => {
                         redirectLock = false;
                     }, REDIRECT_TIMEOUT);
-                    
+
                     matching = false;
                     return router.goto(nextUrl, true);
                 }
@@ -232,7 +235,7 @@
                 }
 
                 if (match) await route.showFallbacks();
-                
+
                 matching = false;
             }
         });
@@ -273,12 +276,12 @@
 
     // Отдельные функции для управления жизненным циклом
     let unregister;
-    
-    // Регистрируем маршрут при монтировании 
+
+    // Регистрируем маршрут при монтировании
     onMount(() => {
         unregister = route.register();
     });
-    
+
     // Используем onDestroy для корректной очистки ресурсов
     onDestroy(() => {
         if (unregister) unregister();
@@ -287,7 +290,7 @@
             redirectTimeout = null;
         }
     });
-    
+
     // Реактивное обновление параметров маршрута
     $: route.update({
         path,

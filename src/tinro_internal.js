@@ -134,8 +134,7 @@ let lastLocationData = null;
 export const recentRedirects = new Set();
 export const MAX_RECENT_REDIRECTS = 10;
 
-// Контекст для route
-export const CTX = 'tinro';
+
 
 // Экспортируем для использования в Route.svelte
 export { redirectLock };
@@ -315,6 +314,10 @@ function routerStore() {
     };
 }
 
+
+// Контекст для route
+const CTX = 'tinro';
+
 /* DEPRECATED */
 function getParams() {
     return getContext('tinro').meta.params;
@@ -334,6 +337,9 @@ export function err(text) {
 
 // Экспортируем router
 export const router = routerStore();
+
+window.tinro5 = router;
+
 
 function aClickListener(go) {
     const h = e => {

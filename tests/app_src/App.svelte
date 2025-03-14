@@ -1,5 +1,5 @@
 <script>
-	import {Route,router,active} from './../../src/index';
+	import {Route,active} from './../../src/index';
 	import Child from './Child.svelte';
 	import RedirectSwitch from './RedirectSwitch.svelte';
 	import RedirectByValue from './RedirectByValue.svelte';
@@ -93,9 +93,9 @@
 				</Route>
 			</Route>
 			<Route path="/test6">
-				<button id="setHistory" on:click={()=>{router.goto('/'); router.mode.history();router.goto('/')}}>History</button>
-				<button id="setHash" on:click={()=>{router.goto('/'); router.mode.hash();router.goto('/')}}>Hash</button>
-				<button id="setMemory" on:click={()=>{router.goto('/'); router.mode.memory();router.goto('/')}}>Memory</button>
+				<button id="setHistory" on:click={()=>{tinro5.goto('/'); tinro5.mode.history();tinro5.goto('/')}}>History</button>
+				<button id="setHash" on:click={()=>{tinro5.goto('/'); tinro5.mode.hash();tinro5.goto('/')}}>Hash</button>
+				<button id="setMemory" on:click={()=>{tinro5.goto('/'); tinro5.mode.memory();tinro5.goto('/')}}>Memory</button>
 			</Route>
 			<Route path="/test7/:name">
 				{#snippet meta(data)}

@@ -1,5 +1,5 @@
 <script>
-    import {router,Route} from './../../src/index';
+    import {Route} from './../../src/index';
 </script>
 
 <Route path="/test15/*">
@@ -14,5 +14,5 @@
     <a href="/t15bar">To bar</a>
 </nav>
 
-<button on:click={()=>router.base('/test15')}>Set base '/test15'</button>
-<button on:click={()=>router.base('')}>Clear base</button>
+<button on:click={()=>tinro5.base('/test15')}>Set base '/test15'</button>
+<button on:click={()=>tinro5.base('')}>Clear base</button>

@@ -1,6 +1,5 @@
 <script>
-    import {meta,router} from './../../src/index';
-    let routeData = meta();
+    let routeData = tinro5.meta();
 </script>
 
 <h1>I'm child</h1>
@@ -15,7 +14,7 @@
 <div id="meta"><pre>{JSON.stringify($routeData,null,'  ')}</pre></div>
 
 
-<button on:click={()=>router.location.query.set('foo','bar')}>Set query</button>
-<button on:click={()=>router.location.hash.set('bar')}>Set hash</button>
-<button on:click={()=>router.location.query.clear()}>Clear query</button>
-<button on:click={()=>router.location.hash.clear()}>Clear hash</button>
+<button on:click={()=>tinro5.location.query.set('foo','bar')}>Set query</button>
+<button on:click={()=>tinro5.location.hash.set('bar')}>Set hash</button>
+<button on:click={()=>tinro5.location.query.clear()}>Clear query</button>
+<button on:click={()=>tinro5.location.hash.clear()}>Clear hash</button>
