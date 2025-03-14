@@ -1,13 +1,6 @@
 <script>
     import {getContext, setContext, onMount, tick, onDestroy} from 'svelte';
     import {writable} from 'svelte/store';
-    import {
-        router,
-        formatPath,
-        getRouteMatch,
-        makeRedirectURL
-    } from './tinro_internal.js';
-
 
     // Контекст для route
     const CTX = 'tinro';
@@ -298,6 +291,77 @@
         firstmatch,
         breadcrumb,
     });
+
+    // Код из tinro_internal.js
+    const MODES = {
+        HISTORY: 1,
+        HASH: 2,
+        MEMORY: 3,
+        OFF: 4,
+        run(mode, fnHistory, fnHash, fnMemory) {
+            return mode === this.HISTORY
+                ? fnHistory && fnHistory()
+                : mode === this.HASH
+                    ? fnHash && fnHash()
+                    : fnMemory && fnMemory();
+        },
+        getDefault() {
+            try {
+                return window && window.location.pathname === 'srcdoc' ? this.MEMORY : this.HISTORY;
+            } catch (e) {
+                return this.MEMORY;
+            }
+        }
+    };
+
+    export function formatPath(path, slash = false) {
+        path = path.slice(
+            path.startsWith('/#') ? 2 : 0,
+            path.endsWith('/*') ? -2 : undefined
+        );
+        if (!path.startsWith('/')) path = '/' + path;
+        if (path === '/') path = '';
+        if (slash && !path.endsWith('/')) path += '/';
+        return path;
+    }
+
+    export function getRouteMatch(pattern, path) {
+        pattern = formatPath(pattern, true);
+        path = formatPath(path, true);
+
+        const keys = [];
+        let params = {};
+        let exact = true;
+        let rx = pattern
+           .split('/')
+           .map(s => s.startsWith(':') ? (keys.push(s.slice(1)), '([^\\/]+)') : s)
+           .join('\\/');
+
+        let match = path.match(new RegExp(`^${rx}$`));
+        if (!match) {
+            exact = false;
+            match = path.match(new RegExp(`^${rx}`));
+        }
+        if (!match) return null;
+        keys.forEach((key, i) => params[key] = match[i + 1]);
+
+        return {
+            exact,
+            params,
+            part: match[0].slice(0, -1)
+        };
+    }
+
+    export function makeRedirectURL(path, parent_pattern, slug) {
+        if (slug === '') return path;
+        if (slug[0] === '/') return slug;
+        const getParts = url => url.split('/').filter(p => p !== '');
+
+        const pathParts = getParts(path);
+        const patternParts = parent_pattern ? getParts(parent_pattern) : [];
+
+        return '/' + patternParts.map((_, i) => pathParts[i]).join('/') + '/' + slug;
+    }
 </script>
 
 {#if showContent}
