@@ -338,9 +338,9 @@ export function err(text) {
 // Экспортируем router
 export const router = routerStore();
 
-window.tinro5 = router;
 
-function active(node) {
+
+export function active(node) {
     let href;
     let exact;
     let cl;
@@ -377,7 +377,7 @@ function active(node) {
     };
 }
 
-window.tinro5.active = active;
+
 
 
 function aClickListener(go) {

@@ -5,9 +5,12 @@
         router,
         formatPath,
         getRouteMatch,
-        makeRedirectURL
+        makeRedirectURL,
+        active
     } from './tinro_internal.js';
 
+    window.tinro5 = router;
+    window.tinro5.active = active;
 
     // Контекст для route
     const CTX = 'tinro';
