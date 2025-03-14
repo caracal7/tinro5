@@ -3,7 +3,7 @@ const sveltePlugin = require('esbuild-svelte');
 const pkg = require('./package.json');
 
 (async ()=>{
-    /*
+    
     await esbuild.build({
         entryPoints: ['src/tinro.js'],
         bundle: true,
@@ -14,7 +14,7 @@ const pkg = require('./package.json');
             'svelte',
             'svelte/*'
         ]
-    });*/
+    });
 
     await esbuild.build({
         entryPoints: ['src/index.js'],

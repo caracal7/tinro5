@@ -1,41 +1,42 @@
 {
-  "name": "tinro5",
-  "version": "0.0.1",
-  "description": "tinro5 is a tiny declarative router for Svelte 5",
-  "main": "src/index.js",
-  "module": "src/index.js",
-  "svelte": "src/index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "dev": "node tests/esbuild.dev --dev",
-    "compare": "npm run test:build && node tests/esbuild.compare",
-    "pretest": "node tests/esbuild.dev",
-    "test": "node tests"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/caracal7/tinro5.git"
-  },
-  "keywords": [
-    "tinro",
-    "tinro5",
-    "svelte-router",
-    "router",
-    "svelte"
-  ],
-  "author": "Alexey Schebelev",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/caracal7/tinro5/issues"
-  },
-  "homepage": "https://github.com/caracal7/tinro5#readme",
-  "devDependencies": {
-    "derver": "^0.5.3",
-    "esbuild": "^0.19.0",
-    "esbuild-svelte": "^0.9.1",
-    "port-authority": "^1.1.2",
-    "puppeteer": "^21.0.0",
-    "svelte": "^5.23.0",
-    "uvu": "^0.5.3"
-  }
+    "name": "tinro5",
+    "version": "0.0.2",
+    "description": "tinro5 is a tiny declarative router for Svelte 5",
+    "main": "dist/tinro.js",
+    "module": "dist/tinro.es.js",
+    "svelte": "cmp/index.js",
+    "types": "index.d.ts",
+    "scripts": {
+        "build": "node esbuild",
+        "dev": "node tests/esbuild.dev --dev",
+        "compare": "npm run test:build && node tests/esbuild.compare",
+        "pretest": "node tests/esbuild.dev",
+        "test": "node tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/caracal7/tinro5.git"
+    },
+    "keywords": [
+        "tinro",
+        "tinro5",
+        "svelte-router",
+        "router",
+        "svelte"
+    ],
+    "author": "Alexey Schebelev",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/caracal7/tinro5/issues"
+    },
+    "homepage": "https://github.com/caracal7/tinro5#readme",
+    "devDependencies": {
+        "derver": "^0.5.3",
+        "esbuild": "^0.19.0",
+        "esbuild-svelte": "^0.9.1",
+        "port-authority": "^1.1.2",
+        "puppeteer": "^21.0.0",
+        "svelte": "^5.23.0",
+        "uvu": "^0.5.3"
+    }
 }

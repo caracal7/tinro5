@@ -26,12 +26,11 @@
                 if(showContent === true) return;
                 showContent = true;
                 _meta2 = _meta;
-                Update();
             },
             onHide(...args){
                 if(showContent === false) return;
                 showContent = false;
-                Update();
+
             },
             onMeta(newmeta){
                 _meta = newmeta;
@@ -45,20 +44,11 @@
             breadcrumb,
         });
 
-        Update();
-
         return () => {
 
         };
     });
 
-    function Update() {
-
-    }
-
-//    $effect(() => {
-//    $:
-//    });
 
 </script>
 
