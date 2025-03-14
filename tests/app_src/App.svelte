@@ -8,7 +8,18 @@
 
 	let isRedirect = false;
 
-	const active = tinro5.active;
+	const active = (node) => {
+		// the node has been mounted in the DOM
+
+		$effect(() => {
+			// setup goes here
+
+			return () => {
+				// teardown goes here
+			};
+		});
+	};
+	//tinro5.active;
 </script>
 
 <div class="layout">

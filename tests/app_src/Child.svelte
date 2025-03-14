@@ -1,5 +1,5 @@
 <script>
-    let routeData = tinro5.meta();
+    let routeData = {}//tinro5.meta();
 </script>
 
 <h1>I'm child</h1>
