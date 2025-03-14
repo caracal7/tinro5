@@ -7,7 +7,7 @@
 	import Base from './Base.svelte';
 
 	let isRedirect = false;
-
+/*
 	const active = (node) => {
 		// the node has been mounted in the DOM
 
@@ -18,8 +18,8 @@
 				// teardown goes here
 			};
 		});
-	};
-	//tinro5.active;
+	};*/
+	const active = tinro5.active;
 </script>
 
 <div class="layout">
