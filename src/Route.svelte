@@ -1,8 +1,7 @@
 <script>
     import { createRouteObject } from './tinro';
+    import { onMount } from 'svelte';
 
-
-/*
     let {
         path = '/*',
         fallback = false,
@@ -12,46 +11,53 @@
         children,
         meta
     } = $props();
-*/
 
-        export let path = '/*';
-        export let fallback = false;
-        export let redirect = false;
-        export let firstmatch = false;
-        export let breadcrumb = null;
-        export let meta;
-        export let children;
-
-    let showContent = false; //$state(false);
+    let showContent = $state(false);
 
     let _meta = {};
-    let _meta2 = {};//$state({});
+    let _meta2 = $state({});
 
+    // Регистрируем маршрут при монтировании
+    onMount(() => {
 
-    const route = createRouteObject({
-        fallback,
-        onShow(){
-            if(showContent === true) return;
-            showContent = true;
-            _meta2 = _meta;
-        },
-        onHide(...args){
-            if(showContent === false) return;
-            showContent = false;
-        },
-        onMeta(newmeta){
-            _meta = newmeta;
-        }
-    });
+        const route = createRouteObject({
+            fallback,
+            onShow(){
+                if(showContent === true) return;
+                showContent = true;
+                _meta2 = _meta;
+                Update();
+            },
+            onHide(...args){
+                if(showContent === false) return;
+                showContent = false;
+                Update();
+            },
+            onMeta(newmeta){
+                _meta = newmeta;
+            }
+        });
 
-
-//    $effect(() => {
-    $:    route.update({
+        route.update({
             path,
             redirect,
             firstmatch,
             breadcrumb,
         });
+
+        Update();
+
+        return () => {
+
+        };
+    });
+
+    function Update() {
+
+    }
+
+//    $effect(() => {
+//    $:
 //    });
 
 </script>
