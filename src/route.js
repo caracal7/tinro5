@@ -37,7 +37,7 @@ export function createRouteObject(options){
         },
         register: () => {
             route.parent[type].add(route);
-            return async ()=>{
+            return async () => {
                 route.parent[type].delete(route);
                 route.parent.activeChilds.delete(route);
                 route.router.un && route.router.un();
@@ -157,7 +157,9 @@ function createRouteProtoObject(options){
                 if(this.pattern !== null) this.match();
             });
         },
-        match(){this.showFallbacks()}
+        match(){
+            this.showFallbacks()
+        }
     }
 
     Object.assign(proto,options);

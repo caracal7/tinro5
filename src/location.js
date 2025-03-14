@@ -1,6 +1,6 @@
 import MODES from './modes';
 import { parseQuery, makeQuery, prefix } from './lib';
-import { get } from 'svelte/store';
+//import { get } from 'svelte/store';
 
 let memoURL;
 let from;
