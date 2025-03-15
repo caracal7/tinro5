@@ -1,11 +1,18 @@
 {
     "name": "tinro5",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "tinro5 is a tiny declarative router for Svelte 5",
     "main": "dist/tinro.js",
     "module": "dist/tinro.es.js",
     "svelte": "src/index.js",
     "types": "index.d.ts",
+    "exports": {
+        ".": {
+            "svelte": "./src/index.js",
+            "import": "./dist/tinro.es.js",
+            "require": "./dist/tinro.js"
+        }
+    },
     "scripts": {
         "build": "node esbuild",
         "dev": "node tests/esbuild.dev --dev",
