@@ -2,6 +2,7 @@ import {hasContext,getContext,setContext,onMount,tick} from 'svelte';
 import {writable} from 'svelte/store';
 import {router} from './router';
 import {err,formatPath,getRouteMatch,makeRedirectURL} from './lib';
+import {updateRouteBreadcrumbs} from './breadcrumbs';
 
 const CTX = 'tinro';
 
@@ -80,6 +81,9 @@ export function createRouteObject(options){
             });
 
             metaStore.set(route.meta);
+            
+            // Обновляем глобальные breadcrumbs
+            updateRouteBreadcrumbs(route.meta);
 
             if(
                 match
