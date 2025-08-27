@@ -1,10 +1,8 @@
 import { writable } from 'svelte/store';
 
-
 const breadcrumbsStore = writable([]);
 
 let breadcrumbsState = $state([]);
-
 
 const Breadcrumbs = {
     subscribe: breadcrumbsStore.subscribe,
@@ -15,18 +13,15 @@ const Breadcrumbs = {
     }
 };
 
-
 export const breadcrumbs = {
-    get breadcrumbs() {
+    get items() {
         return breadcrumbsState
     }
 }
 
-
 Breadcrumbs.subscribe(items => {
     breadcrumbsState = [...items] || [];
 });
-
 
 // Функция для внутреннего использования в Route компоненте
 export function updateRouteBreadcrumbs(routeMeta) {
