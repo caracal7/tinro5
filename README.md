@@ -6,6 +6,7 @@ Svelte 5 port of [tinro](https://github.com/AlexxNB/tinro)
 
 tinro5 is a highly declarative, [tiny](https://github.com/caracal7/tinro5/blob/master/COMPARE.md), dependency free router for [Svelte](https://svelte.dev) web applications.
 
+
 ## Features
 
 * Just one component to declare routes in your app
@@ -18,6 +19,11 @@ tinro5 is a highly declarative, [tiny](https://github.com/caracal7/tinro5/blob/m
 * Parsing query parameters (`?x=42&hello=world&fruits=apple,banana,orange`)
 * Manage URL's hash and query parts
 * [Svelte's REPL](https://svelte.dev/repl/4bc37ff40ada4111b71fe292a4eb90f6) compatible
+
+## CHANGELOG
+
+### 0.0.6
+- Added Global breadcrumbs support
 
 ## Documentation
 
@@ -35,6 +41,7 @@ tinro5 is a highly declarative, [tiny](https://github.com/caracal7/tinro5/blob/m
     - [query](#metaquery)
     - [params](#metaparams)
     - [breadcrumbs](#metabreadcrumbs)
+* [Global breadcrumbs](#global-breadcrumbs)
 * [~~Parameters~~ (Deprecated since 0.5.0)](#parameters)
 * [Navigation method](#navigation-method)
 * [Base path](#base-path)
@@ -327,6 +334,30 @@ All parent routes that have a `breadcrumb` property will add a breadcrumb to the
 </Route>
 ```
 
+## Global breadcrumbs 
+
+tinro5 also provides a global `breadcrumbs` object for easy navigation breadcrumbs:
+
+```html
+<script>
+    import { Route, breadcrumbs } from 'tinro5';
+</script>
+
+<div class="breadcrumbs">
+    {#each breadcrumbs.items as item, index}
+        <a href={item.path}>{item.name}</a>
+        {#if index < breadcrumbs.items.length - 1}
+            <span class="separator"> /&nbsp;</span>
+        {/if}
+    {/each}
+</div>
+
+<Route path="/*" breadcrumb="Home">
+    <Route path="/admin/*" breadcrumb="Admin">Admin</Route>
+    <Route path="/dashboard/*" breadcrumb="Dashboard">Dashboard</Route>
+    <Route path="/">Home</Route>
+</Route>
+```
 
 ## Parameters
 
