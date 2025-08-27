@@ -2,7 +2,7 @@ import {hasContext,getContext,setContext,onMount,tick} from 'svelte';
 import {writable} from 'svelte/store';
 import {router} from './router';
 import {err,formatPath,getRouteMatch,makeRedirectURL} from './lib';
-import {updateRouteBreadcrumbs} from './breadcrumbs';
+import {updateRouteBreadcrumbs} from './breadcrumbs.svelte.js';
 
 const CTX = 'tinro';
 
