@@ -1,5 +1,6 @@
 import { router, active } from './router.js';
 import { createRouteObject, getMeta as meta } from './route.js';
 import { breadcrumbs } from './breadcrumbs.svelte.js';
+import { meta as reactive_meta } from './meta.svelte.js';
 
-export { router, active, meta, createRouteObject, breadcrumbs };
+export { router, active, meta, reactive_meta, createRouteObject, breadcrumbs };

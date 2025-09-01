@@ -3,6 +3,7 @@ import {writable} from 'svelte/store';
 import {router} from './router';
 import {err,formatPath,getRouteMatch,makeRedirectURL} from './lib';
 import {updateRouteBreadcrumbs} from './breadcrumbs.svelte.js';
+import { updateMeta } from './meta.svelte.js';
 
 const CTX = 'tinro';
 
@@ -84,6 +85,7 @@ export function createRouteObject(options){
             
             // Обновляем глобальные breadcrumbs
             updateRouteBreadcrumbs(route.meta);
+            updateMeta(route.meta);
 
             if(
                 match
