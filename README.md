@@ -22,6 +22,8 @@ tinro5 is a highly declarative, [tiny](https://github.com/caracal7/tinro5/blob/m
 
 ## CHANGELOG
 
+### 0.0.7
+- Added reactive_meta
 ### 0.0.6
 - Added Global breadcrumbs support
 
@@ -242,27 +244,72 @@ Routes with the `fallback` property show their content when no matched address w
 
 ## Route meta
 
-You can get useful meta data for each route by importing and calling `meta` from the `tinro5` package. Notice, that `meta()` must be called only inside any `<Route>`'s child component.
+You can get useful information about the current route (like URL parameters, query strings, etc.). There are three ways to access this meta data:
+
+### Using `let:meta` directive
+
+This is the simplest way to get meta information within a `<Route>` component's markup.
 
 ```html
+<Route path="/hello/:name" let:meta>
+    <h1>Hello, {meta.params.name}! My URL is {meta.url}!</h1>
+</Route>
+```
+
+### Using `meta()` function
+
+For use in the `<script>` part of a component, you can import and call the `meta()` function. It returns a Svelte store containing the route's meta data.
+
+**Note:** `meta()` must be called from a component that is a child of a `<Route>`.
+
+```html
+<!-- Post.svelte -->
 <script>
     import {meta} from 'tinro5';
     const route = meta();  
 </script>
 
-<h1>My URL is {route.url}!</h1>
-
-<!-- If you need reactive updates, use it as a store -->
+<!-- Use the $ prefix for reactive updates -->
 <h1>My URL is {$route.url}!</h1>
+<p>Author from params: {$route.params?.author}</p>
 ```
-
-You can also get meta data with the `let:meta` directive:
 
 ```html
-<Route path="/hello" let:meta>
-    <h1>My URL is {meta.url}!</h1>
+<!-- App.svelte -->
+<Route path="/post/:author/*">
+    <Post />
 </Route>
 ```
+
+### Using `reactive_meta` object
+
+For Svelte 5 applications, `tinro5` provides `reactive_meta` — a global, reactive `$state` object. It holds the meta information of the most specific, fully resolved route and can be used in any component, even outside of a `<Route>`.
+
+This is the recommended approach for Svelte 5 and is perfect for parts of your UI that are not part of the route content itself, like a page header, a title component, or for use inside `$effect`.
+
+```html
+<script>
+    import { reactive_meta } from 'tinro5';
+
+    $effect(() => {
+        // This effect runs whenever the final route changes.
+        // On initial load, reactive_meta.url will be undefined, so we add a check.
+        if (!reactive_meta.url) return;
+
+        console.log('New page URL:', reactive_meta.url);
+        document.title = `Post: ${reactive_meta.params.title}`;
+    });
+</script>
+
+<h2>Current page is: {reactive_meta.url || 'Loading...'}</h2>
+<p>Post title: {reactive_meta.params?.title}</p>
+```
+
+A key feature of `reactive_meta` is that it updates only once after the router has finished resolving the entire route tree (including nested routes). This prevents your code from reacting to intermediate states.
+
+**Initial State**: Before any route is matched (e.g., on initial app load), all properties of `reactive_meta` are `undefined`. You should always check for this state in your components, as shown in the `$effect` example above.
+
+The meta object, however you access it, contains the following fields:
 
 ### `meta.url`
 
