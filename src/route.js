@@ -84,7 +84,6 @@ export function createRouteObject(options){
             metaStore.set(route.meta);
             
             // Обновляем глобальные breadcrumbs
-            updateRouteBreadcrumbs(route.meta);
             updateMeta(route.meta);
 
             if(
@@ -93,6 +92,7 @@ export function createRouteObject(options){
                 &&  (!route.exact || (route.exact && match.exact))
                 &&  (!route.parent.firstmatch || !route.parent.matched)
             ){
+                updateRouteBreadcrumbs(route.meta);
                 options.onMeta(route.meta);
                 route.parent.matched = true;
                 route.show();
