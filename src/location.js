@@ -37,6 +37,7 @@ function createLocation(){
 
     return {
         mode: setMode,
+        getMode: () => MODE,
         get: _ => readLocation(MODE),
         go(href,replace){
             writeLocation(MODE,href,replace);

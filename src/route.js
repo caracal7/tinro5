@@ -4,6 +4,8 @@ import {router} from './router';
 import {err,formatPath,getRouteMatch,makeRedirectURL} from './lib';
 import {updateRouteBreadcrumbs} from './breadcrumbs.svelte.js';
 import { updateMeta } from './meta.svelte.js';
+import { location } from './location.js';
+import MODES from './modes.js';
 
 const CTX = 'tinro';
 
@@ -78,7 +80,7 @@ export function createRouteObject(options){
 
             route.breadcrumb && route.meta && route.meta.breadcrumbs.push({
                 name: route.breadcrumb,
-                path: match.part
+                path: location.getMode() === MODES.HASH ? `#${match.part}`: match.part
             });
 
             metaStore.set(route.meta);
